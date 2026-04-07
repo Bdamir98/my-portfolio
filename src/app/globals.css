@@ -1,0 +1,228 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* ─────────────────────────────────────────
+   Design Tokens
+───────────────────────────────────────── */
+:root {
+  --void: #050507;
+  --white: #f5f5f0;
+  --accent: #c8f135;
+  --accent-dim: rgba(200, 241, 53, 0.15);
+  --muted: #888888;
+  --surface: #0f0f12;
+  --surface-2: #1a1a1f;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(172, 255, 67, 0.3);
+
+  /* Z-Index Tokens */
+  --z-header: 80000;
+  --z-lightbox: 90000;
+  --z-cursor: 100000;
+  --z-loading: 110000;
+
+  --font-clash: "Clash Display", system-ui, sans-serif;
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
+
+  --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-expo-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-circ-out: cubic-bezier(0, 0.55, 0.45, 1);
+}
+
+/* ─────────────────────────────────────────
+   Base Reset
+───────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--void);
+  color: var(--white);
+  font-family: var(--font-inter);
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* Custom cursor — hide system cursor only in the public site */
+.public-layout * {
+  cursor: none !important;
+}
+
+/* ─────────────────────────────────────────
+   Selection
+───────────────────────────────────────── */
+::selection {
+  background: var(--accent);
+  color: var(--void);
+}
+
+::-moz-selection {
+  background: var(--accent);
+  color: var(--void);
+}
+
+/* ─────────────────────────────────────────
+   Scrollbar
+───────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* ─────────────────────────────────────────
+   Focus
+───────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ─────────────────────────────────────────
+   Typography Utilities
+───────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-clash);
+}
+
+.font-mono {
+  font-family: var(--font-jetbrains);
+}
+
+.text-fluid-xl {
+  font-size: clamp(3rem, 8vw, 8rem);
+}
+
+.text-fluid-lg {
+  font-size: clamp(2rem, 5vw, 5rem);
+}
+
+.text-fluid-md {
+  font-size: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+/* ─────────────────────────────────────────
+   Grain Overlay
+───────────────────────────────────────── */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  animation: grain 0.8s steps(2) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10%       { transform: translate(-5%, -10%); }
+  20%       { transform: translate(-15%, 5%); }
+  30%       { transform: translate(7%, -25%); }
+  40%       { transform: translate(-5%, 25%); }
+  50%       { transform: translate(-15%, 10%); }
+  60%       { transform: translate(15%, 0%); }
+  70%       { transform: translate(0%, 15%); }
+  80%       { transform: translate(3%, 35%); }
+  90%       { transform: translate(-10%, 10%); }
+}
+
+/* ─────────────────────────────────────────
+   Link Cursor Reset
+───────────────────────────────────────── */
+.public-layout a, 
+.public-layout button, 
+.public-layout [role="button"], 
+.public-layout label, 
+.public-layout select, 
+.public-layout [tabindex] {
+  cursor: none !important;
+}
+
+/* ─────────────────────────────────────────
+   Accent Glow Utility
+───────────────────────────────────────── */
+.glow-accent {
+  box-shadow: 0 0 40px var(--accent-dim), 0 0 80px var(--accent-dim);
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(200, 241, 53, 0.4);
+}
+
+/* ─────────────────────────────────────────
+   Page Transition Overlay
+───────────────────────────────────────── */
+#page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--void);
+  z-index: 9998;
+  clip-path: inset(0 0 100% 0);
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────
+   Ticker / Marquee
+───────────────────────────────────────── */
+.ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-inner {
+  display: inline-flex;
+  animation: ticker 25s linear infinite;
+}
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ─────────────────────────────────────────
+   Shimmer Button
+───────────────────────────────────────── */
+.shimmer-btn {
+  background: linear-gradient(90deg, transparent 0%, rgba(200, 241, 53, 0.12) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

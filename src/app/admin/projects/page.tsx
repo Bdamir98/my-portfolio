@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { Project } from "@/lib/supabase/types";
+import { revalidatePortfolio } from "@/app/actions/media";
 
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -15,6 +16,7 @@ export default function AdminProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [featuring, setFeaturing] = useState<string | null>(null);
 
   const supabase = createClient();
 
@@ -45,6 +47,7 @@ export default function AdminProjectsPage() {
   const togglePublish = async (project: Project) => {
     await (supabase as any).from("projects").update({ published: !project.published }).eq("id", project.id);
     setProjects((prev) => prev.map((p) => p.id === project.id ? { ...p, published: !p.published } : p));
+    await revalidatePortfolio(); // Bust Next.js ISR cache so homepage reflects changes immediately
   };
 
   const handleDelete = async (project: Project) => {
@@ -53,6 +56,14 @@ export default function AdminProjectsPage() {
     await supabase.from("projects").delete().eq("id", project.id);
     setProjects((prev) => prev.filter((p) => p.id !== project.id));
     setDeleting(null);
+  };
+
+  const toggleFeatured = async (project: Project) => {
+    setFeaturing(project.id);
+    await (supabase as any).from("projects").update({ featured: !project.featured }).eq("id", project.id);
+    setProjects((prev) => prev.map((p) => p.id === project.id ? { ...p, featured: !p.featured } : p));
+    await revalidatePortfolio(); // Bust Next.js ISR cache so homepage reflects changes immediately
+    setFeaturing(null);
   };
 
   const getCategoryLabel = (slug: string) => {
@@ -123,8 +134,8 @@ export default function AdminProjectsPage() {
       {/* Table */}
       <div style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
         {/* Header */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 140px 100px 80px 140px", gap: "1rem", padding: "0.75rem 1.5rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--surface-2)" }}>
-          {["Title", "Category", "Views", "Status", "Actions"].map((h) => (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 140px 100px 80px 90px 150px", gap: "1rem", padding: "0.75rem 1.5rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--surface-2)" }}>
+          {["Title", "Category", "Views", "Status", "Featured", "Actions"].map((h) => (
             <p key={h} style={{ fontFamily: "var(--font-jetbrains)", fontSize: "0.5625rem", color: "var(--muted)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{h}</p>
           ))}
         </div>
@@ -144,7 +155,7 @@ export default function AdminProjectsPage() {
               key={project.id}
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 140px 100px 80px 140px",
+                gridTemplateColumns: "1fr 140px 100px 80px 90px 150px",
                 gap: "1rem",
                 alignItems: "center",
                 padding: "1rem 1.5rem",
@@ -186,6 +197,32 @@ export default function AdminProjectsPage() {
                 }}
               >
                 {project.published ? "Live" : "Draft"}
+              </button>
+
+              {/* Featured toggle */}
+              <button
+                onClick={() => toggleFeatured(project)}
+                disabled={featuring === project.id}
+                title={project.featured ? "Remove from Selected Works" : "Add to Selected Works on homepage"}
+                style={{
+                  padding: "0.25rem 0.5rem",
+                  borderRadius: "100px",
+                  border: `1px solid ${project.featured ? "rgba(255,200,50,0.4)" : "var(--border)"}`,
+                  backgroundColor: project.featured ? "rgba(255,200,50,0.12)" : "transparent",
+                  color: project.featured ? "#FFD700" : "var(--muted)",
+                  fontFamily: "var(--font-jetbrains)",
+                  fontSize: "0.625rem",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  cursor: featuring === project.id ? "wait" : "pointer",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+              >
+                <span style={{ fontSize: "0.75rem" }}>{project.featured ? "★" : "☆"}</span>
+                {featuring === project.id ? "…" : project.featured ? "On" : "Off"}
               </button>
 
               {/* Actions */}

@@ -311,7 +311,7 @@ export default function Hero({ settings }: HeroProps) {
           maxWidth: "1400px",
           margin: "0 auto",
           width: "100%",
-          paddingTop: "4rem",
+          paddingTop: "7rem",
         }}
       >
         {/* Tag line */}
@@ -327,6 +327,7 @@ export default function Hero({ settings }: HeroProps) {
             display: "flex",
             alignItems: "center",
             gap: "0.75rem",
+            lineHeight: 1.5,
           }}
         >
           <span

@@ -6,6 +6,8 @@ import type { Project } from "@/lib/supabase/types";
 
 export const revalidate = 60;
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://amirhossain.dev";
+
 type Props = {
   params: { slug: string };
 };
@@ -29,15 +31,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!project) return { title: "Project Not Found" };
 
+  const description =
+    project.description ||
+    `Explore this ${project.category} project by Amir Hossain.`;
+  const canonicalUrl = `${SITE_URL}/work/${params.slug}`;
+
   return {
-    title: `${project.title} | ${project.category} | Amir Hossain`,
-    description: project.description || `Explore this ${project.category} project by Amir Hossain.`,
+    title: `${project.title} | ${project.category}`,
+    description,
+    keywords: [
+      project.title,
+      project.category,
+      "Amir Hossain",
+      "creative portfolio",
+      `${project.category} Bangladesh`,
+    ],
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title: project.title,
-      description: project.description || `Explore this ${project.category} project by Amir Hossain.`,
-      images: project.cover_url ? [{ url: project.cover_url }] : [],
+      description,
+      url: canonicalUrl,
       type: "article",
-    }
+      images: project.cover_url
+        ? [{ url: project.cover_url, width: 1200, height: 630, alt: project.title }]
+        : [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description,
+      images: project.cover_url
+        ? [project.cover_url]
+        : [`${SITE_URL}/opengraph-image`],
+    },
   };
 }
 
@@ -56,6 +82,25 @@ export default async function ProjectPage({ params }: { params: { slug: string }
   // Cast to satisfy TypeScript — notFound() throws above so project is defined
   const safeProject = project as Project;
 
+  // Per-project JSON-LD CreativeWork schema
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: safeProject.title,
+    description:
+      safeProject.description ||
+      `A ${safeProject.category} project by Amir Hossain.`,
+    url: `${SITE_URL}/work/${safeProject.slug}`,
+    ...(safeProject.cover_url ? { image: safeProject.cover_url } : {}),
+    genre: safeProject.category,
+    author: {
+      "@type": "Person",
+      name: "Amir Hossain",
+      url: SITE_URL,
+    },
+    dateCreated: safeProject.created_at,
+  };
+
   // Increment view count (fire and forget)
   (supabase as any)
     .from("projects")
@@ -73,5 +118,13 @@ export default async function ProjectPage({ params }: { params: { slug: string }
     .neq("id", safeProject.id)
     .limit(3);
 
-  return <ProjectDetail project={safeProject} related={(related ?? []) as Project[]} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProjectDetail project={safeProject} related={(related ?? []) as Project[]} />
+    </>
+  );
 }

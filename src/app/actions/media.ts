@@ -10,6 +10,12 @@ export async function revalidatePortfolio() {
   return { success: true };
 }
 
+export async function revalidateVideos() {
+  revalidatePath("/videos");
+  revalidatePath("/");
+  return { success: true };
+}
+
 export async function processAndUploadMedia(formData: FormData) {
   const file = formData.get("file") as File;
   if (!file) throw new Error("No file provided");

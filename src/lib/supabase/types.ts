@@ -118,6 +118,48 @@ export type Database = {
         }
         Relationships: []
       }
+      youtube_videos: {
+        Row: {
+          id: string
+          youtube_id: string
+          title: string
+          description: string | null
+          category: string
+          tags: string[] | null
+          published: boolean
+          featured: boolean
+          sort_order: number
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          youtube_id: string
+          title: string
+          description?: string | null
+          category?: string
+          tags?: string[] | null
+          published?: boolean
+          featured?: boolean
+          sort_order?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          youtube_id?: string
+          title?: string
+          description?: string | null
+          category?: string
+          tags?: string[] | null
+          published?: boolean
+          featured?: boolean
+          sort_order?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           key: string
@@ -284,5 +326,6 @@ export type Project = Tables<"projects">
 export type Testimonial = Tables<"testimonials">
 export type SiteSetting = Tables<"site_settings">
 export type ContactSubmission = Tables<"contact_submissions">
+export type YouTubeVideo = Tables<"youtube_videos">
 export type ProjectInsert = TablesInsert<"projects">
 export type ProjectUpdate = TablesUpdate<"projects">

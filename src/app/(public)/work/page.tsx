@@ -2,12 +2,33 @@ import { createClient } from "@/lib/supabase/server";
 import PortfolioGrid from "@/components/sections/PortfolioGrid";
 import type { Metadata } from "next";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://amirhossain.dev";
+
 export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Explore my portfolio of photography, videography, and web development projects.",
+    "Explore Amir Hossain's full portfolio of photography, videography, and web development projects — from cinematic shoots to modern digital experiences.",
+  keywords: [
+    "photography portfolio", "videography portfolio", "web development projects",
+    "creative portfolio gallery", "Bangladesh photographer work",
+  ],
+  alternates: { canonical: `${SITE_URL}/work` },
+  openGraph: {
+    type: "website",
+    url: `${SITE_URL}/work`,
+    title: "Work — Amir Hossain",
+    description:
+      "Explore the full portfolio of photography, videography, and web development projects by Amir Hossain.",
+    images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: "Amir Hossain Work Portfolio" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Work — Amir Hossain",
+    description: "Explore the full portfolio of photography, videography, and web development projects by Amir Hossain.",
+    images: [`${SITE_URL}/opengraph-image`],
+  },
 };
 
 export default async function WorkPage() {

@@ -59,6 +59,7 @@ export default function EditProjectPage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [driveImageUrl, setDriveImageUrl] = useState("");
 
   const supabase = createClient();
 
@@ -360,6 +361,66 @@ export default function EditProjectPage() {
             <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.875rem", color: "var(--white)" }}>
               Drag & drop more files here, or click to add
             </p>
+          </div>
+
+          <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
+            <input 
+              type="url"
+              placeholder="Or paste a Google Drive Image URL here..."
+              value={driveImageUrl}
+              onChange={(e) => setDriveImageUrl(e.target.value)}
+              style={{ ...inputStyle, flex: 1, padding: "0.6rem 1rem", fontSize: "0.8125rem" }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  document.getElementById("add-drive-btn")?.click();
+                }
+              }}
+            />
+            <button 
+              id="add-drive-btn"
+              type="button"
+              onClick={() => {
+                if (!driveImageUrl) return;
+                let parsedUrl = driveImageUrl;
+                
+                // Convert Google Drive view URL to direct image URL
+                if (parsedUrl.includes("drive.google.com/file/d/")) {
+                  const match = parsedUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                  if (match && match[1]) {
+                    parsedUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+                  }
+                }
+                
+                const newAsset = {
+                  id: Math.random().toString(36).slice(2),
+                  url: parsedUrl,
+                  isPreview: assets.length === 0
+                };
+                
+                setAssets(prev => {
+                  const updated = [...prev, newAsset];
+                  if (updated.length > 0 && !updated.find(a => a.isPreview)) {
+                    updated[0].isPreview = true;
+                  }
+                  return updated;
+                });
+                setDriveImageUrl("");
+              }}
+              style={{
+                padding: "0 1.5rem",
+                backgroundColor: "var(--surface)",
+                color: "var(--white)",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                fontFamily: "var(--font-jetbrains)",
+                fontSize: "0.6875rem",
+                cursor: "pointer",
+                whiteSpace: "nowrap"
+              }}
+            >
+              Add URL
+            </button>
           </div>
 
           {assets.length > 0 && (

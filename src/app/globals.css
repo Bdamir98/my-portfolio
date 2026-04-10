@@ -59,10 +59,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom cursor — hide system cursor only in the public site */
-.public-layout * {
-  cursor: none !important;
-}
+/* Custom cursor removed per request */
 
 /* ─────────────────────────────────────────
    Selection
@@ -163,14 +160,6 @@ body {
 /* ─────────────────────────────────────────
    Link Cursor Reset
 ───────────────────────────────────────── */
-.public-layout a, 
-.public-layout button, 
-.public-layout [role="button"], 
-.public-layout label, 
-.public-layout select, 
-.public-layout [tabindex] {
-  cursor: none !important;
-}
 
 /* ─────────────────────────────────────────
    Accent Glow Utility

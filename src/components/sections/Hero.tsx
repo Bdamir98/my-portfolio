@@ -153,19 +153,14 @@ export default function Hero({ settings }: HeroProps) {
       if (!el) return;
       const target = stats[i].value;
       const obj = { val: 0 };
-      ScrollTrigger.create({
-        trigger: el,
-        start: "top 85%",
-        once: true,
-        onEnter: () => {
-          gsap.to(obj, {
-            val: target,
-            duration: 1.8,
-            ease: "power2.out",
-            onUpdate: () => {
-              el.textContent = Math.round(obj.val).toString();
-            },
-          });
+      
+      gsap.to(obj, {
+        val: target,
+        duration: 1.8,
+        delay: 0.6, // Start slightly after header text appears
+        ease: "power2.out",
+        onUpdate: () => {
+          el.textContent = Math.round(obj.val).toString();
         },
       });
     });

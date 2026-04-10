@@ -52,7 +52,9 @@ export default function ProjectCard({ project }: Props) {
     }
   }
 
-  const isGalleryItem = project.category !== "motion" && project.category !== "web";
+  const hasVideoLink = !!meta.drive_url || !!meta.youtube_url;
+  const hasVideoFile = Array.isArray(project.media_urls) && project.media_urls.some(u => typeof u === 'string' && (u.includes('.mp4') || u.includes('.webm')));
+  const isGalleryItem = !hasVideoLink && !hasVideoFile && project.category !== "motion" && project.category !== "web";
 
   useEffect(() => {
     const fetchCats = async () => {

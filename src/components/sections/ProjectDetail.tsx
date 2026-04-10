@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Project } from "@/lib/supabase/types";
+import Lightbox from "@/components/ui/Lightbox";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -15,6 +16,11 @@ const CATEGORY_LABELS: Record<string, string> = {
   graphics: "Graphic Design",
   motion: "Motion Graphics",
   web: "Web Development",
+};
+
+const formatCategory = (cat: string) => {
+  if (CATEGORY_LABELS[cat]) return CATEGORY_LABELS[cat];
+  return cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 };
 
 /** Extracts a YouTube video embed URL from any common YouTube link format */
@@ -56,6 +62,9 @@ export default function ProjectDetail({ project, related }: Props) {
   const metaRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const mediaUrls = useMemo(() => 
     Array.isArray(project.media_urls) ? project.media_urls as string[] : [],
@@ -199,14 +208,25 @@ export default function ProjectDetail({ project, related }: Props) {
           border: "1px solid var(--border)",
         }}>
           {project.cover_url ? (
-            <Image
-              src={project.cover_url}
-              alt={project.title}
-              fill
-              priority
-              style={{ objectFit: "cover", objectPosition: "center", scale: "1.1" }} // scale for parallax buffer
-              sizes="(max-width: 1400px) 100vw, 1400px"
-            />
+            project.cover_url.includes(".mp4") || project.cover_url.includes(".webm") ? (
+              <video
+                src={project.cover_url}
+                autoPlay
+                muted
+                loop
+                playsInline
+                style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scale(1.1)" }}
+              />
+            ) : (
+              <Image
+                src={project.cover_url}
+                alt={project.title}
+                fill
+                priority
+                style={{ objectFit: "cover", objectPosition: "center", transform: "scale(1.1)" }} // scale for parallax buffer
+                sizes="(max-width: 1400px) 100vw, 1400px"
+              />
+            )
           ) : (
             <div
               style={{
@@ -253,7 +273,7 @@ export default function ProjectDetail({ project, related }: Props) {
                 backdropFilter: "blur(4px)",
               }}
             >
-              {CATEGORY_LABELS[project.category]}
+              {formatCategory(project.category)}
             </span>
           </div>
         </div>
@@ -302,7 +322,7 @@ export default function ProjectDetail({ project, related }: Props) {
               { label: "Client", value: project.client },
               { label: "Year", value: year },
               { label: "Location", value: project.location },
-              { label: "Role", value: CATEGORY_LABELS[project.category] },
+              { label: "Role", value: formatCategory(project.category) },
             ].filter(s => s.value).map((spec, i) => (
               <div key={i} className="spec-item" style={{ minWidth: "140px" }}>
                 <p style={{ 
@@ -499,6 +519,10 @@ export default function ProjectDetail({ project, related }: Props) {
             {mediaUrls.map((url, i) => (
               <div
                 key={i}
+                onClick={() => {
+                  setLightboxIndex(i);
+                  setLightboxOpen(true);
+                }}
                 style={{
                   position: "relative",
                   width: "45vw",
@@ -508,6 +532,7 @@ export default function ProjectDetail({ project, related }: Props) {
                   overflow: "hidden",
                   flexShrink: 0,
                   backgroundColor: "var(--surface)",
+                  cursor: "zoom-in",
                 }}
               >
                 {url.includes(".mp4") || url.includes(".webm") ? (
@@ -590,6 +615,15 @@ export default function ProjectDetail({ project, related }: Props) {
           </div>
         </div>
       )}
+
+      {/* Fullscreen Lightbox for Gallery */}
+      <Lightbox
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        images={mediaUrls}
+        title={project.title}
+        initialIndex={lightboxIndex}
+      />
     </article>
   );
 }

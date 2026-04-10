@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -17,9 +18,10 @@ interface LightboxProps {
   imageUrl?: string; // Fallback for backward compatibility
   title?: string;
   description?: string | null;
+  initialIndex?: number;
 }
 
-export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title, description }: LightboxProps) {
+export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title, description, initialIndex = 0 }: LightboxProps) {
   const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -32,7 +34,7 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
     setMounted(true);
     if (isOpen) {
       document.body.style.overflow = "hidden";
-      setCurrentIndex(0);
+      setCurrentIndex(initialIndex >= 0 && initialIndex < allImages.length ? initialIndex : 0);
     } else {
       document.body.style.overflow = "auto";
       // Ensure GSAP ScrollTrigger and Lenis are aware of the change
@@ -42,7 +44,7 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
       document.body.style.overflow = "auto";
       ScrollTrigger.refresh();
     };
-  }, [isOpen]);
+  }, [isOpen, initialIndex, allImages.length]);
 
   const handleNext = useCallback(
     (e?: React.MouseEvent) => {
@@ -281,23 +283,54 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
               maxHeight: "70vh"
             }}>
               <AnimatePresence mode="wait">
-                <motion.img
-                  key={currentIndex}
-                  src={allImages[currentIndex]}
-                  alt={title || "Portfolio Work"}
-                  initial={{ opacity: 0, scale: 0.9, x: 20 }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, x: -20 }}
-                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                  style={{
-                    maxWidth: "min(95vw, 1400px)",
-                    maxHeight: "70vh",
-                    objectFit: "contain",
-                    borderRadius: "8px",
-                    boxShadow: "0 40px 120px rgba(0,0,0,0.9)",
-                    display: "block",
-                  }}
-                />
+                {allImages[currentIndex]?.includes(".mp4") || allImages[currentIndex]?.includes(".webm") ? (
+                  <motion.video
+                    key={`video-${currentIndex}`}
+                    src={allImages[currentIndex]}
+                    controls
+                    autoPlay
+                    playsInline
+                    initial={{ opacity: 0, scale: 0.9, x: 20 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, x: -20 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                    style={{
+                      maxWidth: "min(95vw, 1400px)",
+                      maxHeight: "70vh",
+                      objectFit: "contain",
+                      borderRadius: "8px",
+                      boxShadow: "0 40px 120px rgba(0,0,0,0.9)",
+                      display: "block",
+                      outline: "none"
+                    }}
+                  />
+                ) : (
+                  <motion.div
+                    key={`img-${currentIndex}`}
+                    initial={{ opacity: 0, scale: 0.9, x: 20 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, x: -20 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                    style={{
+                      position: "relative",
+                      width: "100%",
+                      maxWidth: "min(95vw, 1400px)",
+                      height: "70vh",
+                      display: "block",
+                      borderRadius: "8px",
+                      boxShadow: "0 40px 120px rgba(0,0,0,0.9)",
+                      overflow: "hidden"
+                    }}
+                  >
+                    <Image
+                      src={allImages[currentIndex]}
+                      alt={title || "Portfolio Work"}
+                      fill
+                      sizes="(max-width: 1400px) 100vw, 1400px"
+                      style={{ objectFit: "contain" }}
+                    />
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
 

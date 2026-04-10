@@ -1,4 +1,3 @@
-import CustomCursor from "@/components/layout/CustomCursor";
 import { createStaticClient } from "@/lib/supabase/server";
 import LoadingScreen from "@/components/layout/LoadingScreen";
 import Header from "@/components/layout/Header";
@@ -16,7 +15,6 @@ export default async function PublicLayout({ children }: { children: React.React
   return (
     <div className="grain public-layout">
       <LoadingScreen />
-      <CustomCursor />
       <SmoothScroller>
         <Header settings={settings.global} availability={settings.contact?.availability} />
         <main style={{ minHeight: "100vh" }}>{children}</main>

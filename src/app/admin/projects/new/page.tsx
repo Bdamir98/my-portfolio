@@ -18,6 +18,7 @@ const schema = z.object({
   slug: z.string().min(2).regex(/^[a-z0-9-]+$/),
   category: z.string().min(1, "Category is required"),
   drive_url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  youtube_url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   tech_stack: z.string().optional(),
   published: z.boolean().default(false),
 });
@@ -84,6 +85,7 @@ export default function NewProjectPage() {
   const category = watch("category");
   const currentCategory = categories.find(c => c.slug === category);
   const isSpecialCategory = category === ("motion" as any) || category === ("web" as any);
+  const categoryAllowsVideo = currentCategory?.allowed_types?.includes("video") ?? false;
 
   const onDrop = useCallback(async (accepted: File[]) => {
     const allowedTypes = currentCategory?.allowed_types || ["image", "video"];
@@ -216,8 +218,11 @@ export default function NewProjectPage() {
           orientation: dims.orientation
         };
 
-        if (category === ("motion" as any)) {
-          projectMetadata.drive_url = data.drive_url;
+        if (categoryAllowsVideo) {
+          if (data.drive_url) projectMetadata.drive_url = data.drive_url;
+          else delete projectMetadata.drive_url;
+          if (data.youtube_url) projectMetadata.youtube_url = data.youtube_url;
+          else delete projectMetadata.youtube_url;
         }
 
         const insert: ProjectInsert = {
@@ -344,10 +349,20 @@ export default function NewProjectPage() {
           </div>
         )}
 
-        {category === ("motion" as any) && (
-          <div>
-            <label style={labelStyle}>Google Drive Video URL</label>
-            <input {...register("drive_url")} placeholder="https://drive.google.com/file/d/..." style={inputStyle} />
+        {categoryAllowsVideo && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ padding: "0.75rem 1rem", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "8px" }}>
+              <p style={{ fontFamily: "var(--font-jetbrains)", fontSize: "0.5625rem", color: "var(--accent)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 0.5rem" }}>Video URL Options (Optional)</p>
+              <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "var(--muted)", margin: 0 }}>Paste a Google Drive or YouTube URL to embed a video player on the project page.</p>
+            </div>
+            <div>
+              <label style={labelStyle}>Google Drive Video URL</label>
+              <input {...register("drive_url")} placeholder="https://drive.google.com/file/d/..." style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>YouTube Video URL</label>
+              <input {...register("youtube_url")} placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..." style={inputStyle} />
+            </div>
           </div>
         )}
 

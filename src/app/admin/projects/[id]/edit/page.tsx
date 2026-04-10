@@ -18,6 +18,7 @@ const schema = z.object({
   slug: z.string().min(2).regex(/^[a-z0-9-]+$/),
   category: z.string().min(1, "Category is required"),
   drive_url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  youtube_url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   tech_stack: z.string().optional(),
   published: z.boolean().default(false),
 });
@@ -67,6 +68,7 @@ export default function EditProjectPage() {
 
   const category = watch("category");
   const currentCategory = categories.find(c => c.slug === category);
+  const categoryAllowsVideo = currentCategory?.allowed_types?.includes("video") ?? false;
 
   const fetchCategories = useCallback(async () => {
     const { data } = await (supabase as any).from("site_settings").select("value").eq("key", "project_categories").maybeSingle();
@@ -88,6 +90,7 @@ export default function EditProjectPage() {
           category: data.category as any,
           tech_stack: (data.tech_stack ?? []).join(", "),
           drive_url: (data.metadata as any)?.drive_url ?? "",
+          youtube_url: (data.metadata as any)?.youtube_url ?? "",
           published: data.published ?? false,
         });
 
@@ -181,10 +184,14 @@ export default function EditProjectPage() {
 
       const metadata: any = typeof project?.metadata === 'object' && project?.metadata ? { ...project.metadata } : {};
 
-      if (data.category === "motion" && data.drive_url) {
-        metadata.drive_url = data.drive_url;
+      if (categoryAllowsVideo) {
+        if (data.drive_url) metadata.drive_url = data.drive_url;
+        else delete metadata.drive_url;
+        if (data.youtube_url) metadata.youtube_url = data.youtube_url;
+        else delete metadata.youtube_url;
       } else {
         delete metadata.drive_url;
+        delete metadata.youtube_url;
       }
 
       const { error: updateError } = await (supabase as any).from("projects").update({
@@ -305,14 +312,28 @@ export default function EditProjectPage() {
         </div>
 
         {/* Dynamic Fields */}
-        {category === "motion" && (
-          <div>
-            <label style={labelStyle}>Google Drive Video URL</label>
-            <input {...register("drive_url")} placeholder="https://drive.google.com/file/d/..." style={inputStyle}
-              onFocus={(e) => { (e.target as HTMLElement).style.borderColor = "var(--accent)"; }}
-              onBlur={(e) => { (e.target as HTMLElement).style.borderColor = errors.drive_url ? "crimson" : "var(--border)"; }}
-            />
-            {errors.drive_url && <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "crimson", marginTop: "0.25rem" }}>{errors.drive_url.message}</p>}
+        {categoryAllowsVideo && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ padding: "0.75rem 1rem", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "8px" }}>
+              <p style={{ fontFamily: "var(--font-jetbrains)", fontSize: "0.5625rem", color: "var(--accent)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 0.5rem" }}>Video URL Options (Optional)</p>
+              <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "var(--muted)", margin: 0 }}>Paste a Google Drive or YouTube URL to embed a video player on the project page.</p>
+            </div>
+            <div>
+              <label style={labelStyle}>Google Drive Video URL</label>
+              <input {...register("drive_url")} placeholder="https://drive.google.com/file/d/..." style={inputStyle}
+                onFocus={(e) => { (e.target as HTMLElement).style.borderColor = "var(--accent)"; }}
+                onBlur={(e) => { (e.target as HTMLElement).style.borderColor = errors.drive_url ? "crimson" : "var(--border)"; }}
+              />
+              {errors.drive_url && <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "crimson", marginTop: "0.25rem" }}>{errors.drive_url.message}</p>}
+            </div>
+            <div>
+              <label style={labelStyle}>YouTube Video URL</label>
+              <input {...register("youtube_url")} placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..." style={inputStyle}
+                onFocus={(e) => { (e.target as HTMLElement).style.borderColor = "var(--accent)"; }}
+                onBlur={(e) => { (e.target as HTMLElement).style.borderColor = errors.youtube_url ? "crimson" : "var(--border)"; }}
+              />
+              {errors.youtube_url && <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "crimson", marginTop: "0.25rem" }}>{errors.youtube_url.message}</p>}
+            </div>
           </div>
         )}
 

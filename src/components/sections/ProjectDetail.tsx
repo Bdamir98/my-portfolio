@@ -17,6 +17,35 @@ const CATEGORY_LABELS: Record<string, string> = {
   web: "Web Development",
 };
 
+/** Extracts a YouTube video embed URL from any common YouTube link format */
+function getYouTubeEmbedUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    let videoId: string | null = null;
+
+    if (parsed.hostname === "youtu.be") {
+      videoId = parsed.pathname.slice(1);
+    } else if (
+      parsed.hostname === "www.youtube.com" ||
+      parsed.hostname === "youtube.com"
+    ) {
+      if (parsed.pathname === "/watch") {
+        videoId = parsed.searchParams.get("v");
+      } else if (parsed.pathname.startsWith("/embed/")) {
+        videoId = parsed.pathname.split("/embed/")[1];
+      } else if (parsed.pathname.startsWith("/shorts/")) {
+        videoId = parsed.pathname.split("/shorts/")[1];
+      }
+    }
+
+    return videoId
+      ? `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 interface Props {
   project: Project;
   related: Project[];
@@ -336,16 +365,36 @@ export default function ProjectDetail({ project, related }: Props) {
           </div>
         </div>
 
-        {/* Motion Graphics Player */}
-        {project.category === "motion" && (project.metadata as any)?.drive_url && (
-          <div style={{ marginBottom: "6rem", width: "100%", aspectRatio: "16/9", backgroundColor: "var(--surface)", borderRadius: "20px", overflow: "hidden", border: "1px solid var(--border)" }}>
-            <iframe
-              src={((project.metadata as any).drive_url as string).replace(/\/view.*$/, "/preview")}
-              width="100%"
-              height="100%"
-              allow="autoplay; fullscreen"
-              style={{ border: "none" }}
-            ></iframe>
+        {/* Google Drive Video Player — shown for any project with a drive_url in metadata */}
+        {(project.metadata as any)?.drive_url && (
+          <div style={{ marginBottom: "6rem" }}>
+            <p style={{ fontFamily: "var(--font-jetbrains)", fontSize: "0.625rem", color: "var(--accent)", letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "1.5rem" }}>Project Video</p>
+            <div style={{ width: "100%", aspectRatio: "16/9", backgroundColor: "var(--surface)", borderRadius: "20px", overflow: "hidden", border: "1px solid var(--border)" }}>
+              <iframe
+                src={((project.metadata as any).drive_url as string).replace(/\/view.*$/, "/preview")}
+                width="100%"
+                height="100%"
+                allow="autoplay; fullscreen"
+                style={{ border: "none" }}
+              ></iframe>
+            </div>
+          </div>
+        )}
+
+        {/* YouTube Video Player — shown for any project with a youtube_url in metadata */}
+        {(project.metadata as any)?.youtube_url && getYouTubeEmbedUrl((project.metadata as any).youtube_url) && (
+          <div style={{ marginBottom: "6rem" }}>
+            <p style={{ fontFamily: "var(--font-jetbrains)", fontSize: "0.625rem", color: "var(--accent)", letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "1.5rem" }}>YouTube Video</p>
+            <div style={{ width: "100%", aspectRatio: "16/9", backgroundColor: "var(--surface)", borderRadius: "20px", overflow: "hidden", border: "1px solid var(--border)" }}>
+              <iframe
+                src={getYouTubeEmbedUrl((project.metadata as any).youtube_url)!}
+                width="100%"
+                height="100%"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{ border: "none" }}
+              ></iframe>
+            </div>
           </div>
         )}
 

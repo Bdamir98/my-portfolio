@@ -366,19 +366,19 @@ export default function EditProjectPage() {
           <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
             <input 
               type="url"
-              placeholder="Or paste a Google Drive Image URL here..."
+              placeholder="Or paste any Image URL (CDN, Drive, etc) here..."
               value={driveImageUrl}
               onChange={(e) => setDriveImageUrl(e.target.value)}
               style={{ ...inputStyle, flex: 1, padding: "0.6rem 1rem", fontSize: "0.8125rem" }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  document.getElementById("add-drive-btn")?.click();
+                  document.getElementById("add-url-btn")?.click();
                 }
               }}
             />
             <button 
-              id="add-drive-btn"
+              id="add-url-btn"
               type="button"
               onClick={() => {
                 if (!driveImageUrl) return;

@@ -5,13 +5,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "efotmfasxdrsygdapkuk.supabase.co",
-        pathname: "/storage/v1/object/public/**",
+        hostname: "**",
       },
       {
-        protocol: "https",
-        hostname: "drive.google.com",
-        pathname: "/**",
+        protocol: "http",
+        hostname: "**",
       },
     ],
     formats: ["image/avif", "image/webp"],

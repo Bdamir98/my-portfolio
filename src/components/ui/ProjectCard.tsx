@@ -123,7 +123,9 @@ export default function ProjectCard({ project, aspectRatioOverride }: Props) {
         src={project.cover_url || "/placeholder.png"}
         alt={project.title}
         fill
-        sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 16vw"
+        quality={100}
+        unoptimized={!project.cover_url?.includes("drive.google.com")}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         style={{
           objectFit: "cover",
           transform: isHovered ? "scale(1.05)" : "scale(1)",

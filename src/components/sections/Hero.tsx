@@ -295,6 +295,7 @@ export default function Hero({ settings }: HeroProps) {
           src={revealImage}
           alt="Creative Reveal"
           fill
+          unoptimized={typeof revealImage === 'string' && !revealImage.includes("drive.google.com")}
           style={{ objectFit: "cover" }}
           onLoad={() => setIsRevealLoaded(true)}
           priority

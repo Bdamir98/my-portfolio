@@ -227,9 +227,11 @@ export default function ProjectDetail({ project, related }: Props) {
                 alt={project.title}
                 fill
                 priority
+                quality={100}
+                unoptimized={!project.cover_url?.includes("drive.google.com")}
                 onLoad={() => setIsCoverLoaded(true)}
                 style={{ objectFit: "cover", objectPosition: "center", transform: "scale(1.1)" }} // scale for parallax buffer
-                sizes="(max-width: 1400px) 100vw, 1400px"
+                sizes="100vw"
               />
             )
           ) : (
@@ -556,7 +558,9 @@ export default function ProjectDetail({ project, related }: Props) {
                     src={url}
                     alt={`${project.title} ${i + 1}`}
                     fill
-                    sizes="70vw"
+                    quality={100}
+                    unoptimized={!url?.includes("drive.google.com")}
+                    sizes="100vw"
                     onLoad={() => setLoadedGalleryImages(prev => ({ ...prev, [i]: true }))}
                     style={{ objectFit: "contain" }}
                   />
@@ -610,7 +614,7 @@ export default function ProjectDetail({ project, related }: Props) {
                 >
                   <div className={loadedRelated[p.id] ? "" : "flutter-shimmer"} style={{ aspectRatio: "4/3", position: "relative", backgroundColor: "var(--surface-2)" }}>
                     {p.cover_url && (
-                      <Image src={p.cover_url} alt={p.title} fill style={{ objectFit: "cover" }} sizes="33vw" onLoad={() => setLoadedRelated(prev => ({ ...prev, [p.id]: true }))} />
+                      <Image src={p.cover_url} alt={p.title} fill quality={100} unoptimized={!p.cover_url?.includes("drive.google.com")} style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" onLoad={() => setLoadedRelated(prev => ({ ...prev, [p.id]: true }))} />
                     )}
                   </div>
                   <div style={{ padding: "1rem 1.25rem" }}>

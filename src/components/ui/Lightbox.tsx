@@ -331,6 +331,8 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
                       alt={title || "Portfolio Work"}
                       width={1920}
                       height={1080}
+                      quality={100}
+                      unoptimized={!allImages[currentIndex]?.includes("drive.google.com")}
                       onLoad={() => setLoadedImages(prev => ({ ...prev, [currentIndex]: true }))}
                       style={{ 
                          maxWidth: "100%", 

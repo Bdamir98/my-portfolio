@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Project } from "@/lib/supabase/types";
 import Lightbox from "@/components/ui/Lightbox";
+import { incrementProjectView } from "@/app/actions/analytics";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -68,6 +69,13 @@ export default function ProjectDetail({ project, related }: Props) {
   const [isCoverLoaded, setIsCoverLoaded] = useState(false);
   const [loadedGalleryImages, setLoadedGalleryImages] = useState<Record<number, boolean>>({});
   const [loadedRelated, setLoadedRelated] = useState<Record<string, boolean>>({});
+
+  // Increment view count on project load
+  useEffect(() => {
+    if (project?.id) {
+      incrementProjectView(project.id);
+    }
+  }, [project?.id]);
 
   const mediaUrls = useMemo(() =>
     Array.isArray(project.media_urls) ? project.media_urls as string[] : [],

@@ -181,29 +181,29 @@ export default function PortfolioGrid({ projects }: Props) {
         </div>
       )}
 
-      {/* Grid - Masonry style using columns */}
+      {/* Grid - Standard grid for horizontal filling */}
       <div
         ref={gridRef}
         style={{
-          columnCount: 3,
-          columnGap: "0.5rem",
           maxWidth: "1400px",
           margin: "0 auto",
         }}
-        className="portfolio-masonry"
+        className="portfolio-grid"
       >
         <style jsx>{`
-          .portfolio-masonry {
-            column-count: 4;
+          .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 0.5rem;
           }
-          @media (min-width: 768px) {
-            .portfolio-masonry {
-              column-count: 6;
+          @media (min-width: 640px) {
+            .portfolio-grid {
+              grid-template-columns: repeat(2, 1fr);
             }
           }
-          @media (min-width: 1200px) {
-            .portfolio-masonry {
-              column-count: 8;
+          @media (min-width: 1024px) {
+            .portfolio-grid {
+              grid-template-columns: repeat(3, 1fr);
             }
           }
         `}</style>
@@ -213,8 +213,6 @@ export default function PortfolioGrid({ projects }: Props) {
             data-card 
             data-flip-id={project.id}
             style={{
-              breakInside: "avoid",
-              marginBottom: "0.5rem",
               position: "relative",
             }}
           >

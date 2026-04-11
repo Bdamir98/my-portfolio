@@ -396,8 +396,8 @@ export default function NewProjectPage() {
 
           <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
             <input 
-              type="url"
-              placeholder="Or paste any Image URL (CDN, Drive, etc) here..."
+              type="text"
+              placeholder="Or paste multiple Image URLs (separated by spaces or commas)..."
               value={driveImageUrl}
               onChange={(e) => setDriveImageUrl(e.target.value)}
               style={{ ...inputStyle, flex: 1, padding: "0.6rem 1rem", fontSize: "0.8125rem" }}
@@ -412,27 +412,33 @@ export default function NewProjectPage() {
               id="add-url-btn"
               type="button"
               onClick={() => {
-                if (!driveImageUrl) return;
-                let parsedUrl = driveImageUrl;
+                if (!driveImageUrl.trim()) return;
                 
-                // Convert Google Drive view URL to direct image URL
-                if (parsedUrl.includes("drive.google.com/file/d/")) {
-                  const match = parsedUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                  if (match && match[1]) {
-                    parsedUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+                // Split by spaces, commas, or newlines to support bulk paste
+                const rawUrls = driveImageUrl.split(/[\s,]+/).filter(u => u.trim());
+                if (rawUrls.length === 0) return;
+
+                const newAssets = rawUrls.map(raw => {
+                  let parsedUrl = raw;
+                  // Convert Google Drive view URL to direct image URL
+                  if (parsedUrl.includes("drive.google.com/file/d/")) {
+                    const match = parsedUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                    if (match && match[1]) {
+                      parsedUrl = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+                    }
                   }
-                }
-                
-                const newAsset = {
-                  id: Math.random().toString(36).slice(2),
-                  url: parsedUrl,
-                  isPreview: assets.length === 0,
-                  title: "Image from URL",
-                  description: ""
-                };
+                  
+                  return {
+                    id: Math.random().toString(36).slice(2) + Math.random().toString(36).substring(2, 6),
+                    url: parsedUrl,
+                    isPreview: false,
+                    title: "Image from URL",
+                    description: ""
+                  };
+                });
                 
                 setAssets(prev => {
-                  const updated = [...prev, newAsset];
+                  const updated = [...prev, ...newAssets];
                   if (updated.length > 0 && !updated.find(a => a.isPreview)) {
                     updated[0].isPreview = true;
                   }

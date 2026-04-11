@@ -8,6 +8,7 @@ import type { Project } from "@/lib/supabase/types";
 import { useCursorStore } from "@/store/cursorStore";
 import Lightbox from "./Lightbox";
 import { createClient } from "@/lib/supabase/client";
+import { incrementProjectView } from "@/app/actions/analytics";
 
 interface Props {
   project: Project;
@@ -76,9 +77,7 @@ export default function ProjectCard({ project, aspectRatioOverride }: Props) {
     gsap.to(overlayRef.current, { opacity: 1, duration: 0.35 });
     gsap.to(btnRef.current, { y: 0, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
 
-    if (!isGalleryItem) {
-      gsap.to(contentRef.current, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out" });
-    }
+    gsap.to(contentRef.current, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out" });
     setMode("view", isGalleryItem ? "OPEN" : "VIEW");
   };
 
@@ -88,9 +87,7 @@ export default function ProjectCard({ project, aspectRatioOverride }: Props) {
     gsap.to(overlayRef.current, { opacity: 0, duration: 0.3 });
     gsap.to(btnRef.current, { y: 20, opacity: 0, duration: 0.3 });
 
-    if (!isGalleryItem) {
-      gsap.to(contentRef.current, { y: 20, opacity: 0, duration: 0.3 });
-    }
+    gsap.to(contentRef.current, { y: 20, opacity: 0, duration: 0.3 });
     setMode("default");
   };
 
@@ -98,6 +95,7 @@ export default function ProjectCard({ project, aspectRatioOverride }: Props) {
     if (isGalleryItem) {
       e.preventDefault();
       setIsLightboxOpen(true);
+      incrementProjectView(project.id);
     }
   };
 
@@ -172,54 +170,55 @@ export default function ProjectCard({ project, aspectRatioOverride }: Props) {
         </div>
       </div>
 
-      {/* Info Content - Only for non-gallery items - Scale down for grid density */}
-      {!isGalleryItem && (
+      {/* Info Content - Scale down for grid density */}
+      <div
+        ref={contentRef}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          padding: "3rem 0.75rem 0.75rem 0.75rem",
+          background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%)",
+          transform: "translateY(15px)",
+          opacity: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.35rem",
+          zIndex: 10,
+          pointerEvents: "none",
+        }}
+      >
         <div
-          ref={contentRef}
           style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            padding: "0.75rem",
-            transform: "translateY(15px)",
-            opacity: 0,
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.35rem",
-            zIndex: 10,
-            pointerEvents: "none",
+            padding: "0.25rem 0.6rem",
+            borderRadius: "100px",
+            backgroundColor: "var(--accent)",
+            color: "var(--void)",
+            fontFamily: "var(--font-jetbrains)",
+            fontSize: "0.5rem",
+            fontWeight: 600,
+            textTransform: "uppercase",
+            width: "fit-content",
+            letterSpacing: "0.05em",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.5)",
           }}
         >
-          <div
-            style={{
-              padding: "0.25rem 0.6rem",
-              borderRadius: "100px",
-              backgroundColor: "var(--accent)",
-              color: "var(--void)",
-              fontFamily: "var(--font-jetbrains)",
-              fontSize: "0.5rem",
-              fontWeight: 600,
-              textTransform: "uppercase",
-              width: "fit-content",
-              letterSpacing: "0.05em",
-            }}
-          >
-            {categoryNames[project.category] || project.category}
-          </div>
-          <h3
-            style={{
-              fontFamily: "var(--font-clash)",
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              color: "var(--white)",
-              lineHeight: 1.2,
-            }}
-          >
-            {project.title}
-          </h3>
+          {categoryNames[project.category] || project.category}
         </div>
-      )}
+        <h3
+          style={{
+            fontFamily: "var(--font-clash)",
+            fontSize: "0.875rem",
+            fontWeight: 700,
+            color: "var(--white)",
+            lineHeight: 1.2,
+            textShadow: "0 2px 4px rgba(0,0,0,0.8)",
+          }}
+        >
+          {project.title}
+        </h3>
+      </div>
     </div>
   );
 

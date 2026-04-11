@@ -101,13 +101,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
     dateCreated: safeProject.created_at,
   };
 
-  // Increment view count (fire and forget)
-  (supabase as any)
-    .from("projects")
-    .update({ view_count: (safeProject.view_count ?? 0) + 1 })
-    .eq("id", safeProject.id)
-    .then(() => null)
-    .catch(() => null);
+
 
   // Related projects (same category, excluding current)
   const { data: related } = await (supabase as any)

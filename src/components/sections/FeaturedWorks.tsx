@@ -24,8 +24,6 @@ export default function FeaturedWorks({ projects }: Props) {
   const gridRef = useRef<HTMLDivElement>(null);
 
   const capped = (projects ?? []).slice(0, 8);
-  const row1 = capped.slice(0, 4);
-  const row2 = capped.slice(4);
   const hasProjects = capped.length > 0;
 
   useGSAP(
@@ -73,16 +71,6 @@ export default function FeaturedWorks({ projects }: Props) {
   );
 
   if (!hasProjects) return null;
-
-  // Column widths: hero card is wider, others are equal narrower columns
-  const row1Cols =
-    row1.length === 1
-      ? "1fr"
-      : row1.length === 2
-      ? "1.6fr 1fr"
-      : row1.length === 3
-      ? "1.6fr 1fr 1fr"
-      : "1.6fr 1fr 1fr 1fr";
 
   return (
     <section
@@ -153,145 +141,61 @@ export default function FeaturedWorks({ projects }: Props) {
         </p>
       </div>
 
-      {/* ── Grid — max-width keeps cards from going full-screen wide ── */}
+      {/* ── Grid ── */}
       <div
         ref={gridRef}
-        style={{ maxWidth: "900px" }}
+        style={{ width: "100%" }}
       >
-        {/* ROW 1 */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: row1Cols,
-            gap: "1rem",
-            marginBottom: row2.length > 0 ? "1rem" : 0,
-            alignItems: "start",   // cards align to top; height = natural aspect ratio
-          }}
-        >
-          {row1.map((proj) => (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {capped.map((proj) => (
             <div key={proj.id} className="fw-card">
-              <ProjectCard project={proj} />
+              <ProjectCard project={proj} aspectRatioOverride={1} />
             </div>
           ))}
         </div>
 
-        {/* ROW 2 + CTA */}
-        {row2.length > 0 && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${Math.min(row2.length, 3)}, 1fr) auto`,
-              gap: "1rem",
-              alignItems: "start",
-            }}
-          >
-            {row2.map((proj, i) => (
-              <div
-                key={proj.id}
-                className="fw-card"
-                style={{
-                  maxHeight: "210px",
-                  overflow: "hidden",
-                  borderRadius: "12px",
-                }}
-              >
-                <ProjectCard project={proj} />
-              </div>
-            ))}
-
-            {/* CTA button */}
-            <div
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "1.5rem",
+          }}
+        >
+          <MagneticElement>
+            <Link
+              href="/work"
               style={{
-                display: "flex",
+                display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "0 1rem",
+                width: 120,
+                height: 120,
+                borderRadius: "50%",
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--border)",
+                color: "var(--white)",
+                fontFamily: "var(--font-jetbrains)",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                fontSize: "0.65rem",
+                textDecoration: "none",
+                transition: "border-color 0.3s, color 0.3s, background-color 0.3s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--accent)";
+                e.currentTarget.style.borderColor = "var(--accent)";
+                e.currentTarget.style.color = "var(--void)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--surface)";
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.color = "var(--white)";
               }}
             >
-              <MagneticElement>
-                <Link
-                  href="/work"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 120,
-                    height: 120,
-                    borderRadius: "50%",
-                    backgroundColor: "var(--surface)",
-                    border: "1px solid var(--border)",
-                    color: "var(--white)",
-                    fontFamily: "var(--font-jetbrains)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.15em",
-                    fontSize: "0.65rem",
-                    textDecoration: "none",
-                    transition: "border-color 0.3s, color 0.3s, background-color 0.3s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "var(--accent)";
-                    e.currentTarget.style.borderColor = "var(--accent)";
-                    e.currentTarget.style.color = "var(--void)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "var(--surface)";
-                    e.currentTarget.style.borderColor = "var(--border)";
-                    e.currentTarget.style.color = "var(--white)";
-                  }}
-                >
-                  View All →
-                </Link>
-              </MagneticElement>
-            </div>
-          </div>
-        )}
-
-        {/* CTA when only row1 (≤4 projects total) */}
-        {row2.length === 0 && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginTop: "1.5rem",
-            }}
-          >
-            <MagneticElement>
-              <Link
-                href="/work"
-                className="fw-card"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 120,
-                  height: 120,
-                  borderRadius: "50%",
-                  backgroundColor: "var(--surface)",
-                  border: "1px solid var(--border)",
-                  color: "var(--white)",
-                  fontFamily: "var(--font-jetbrains)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.15em",
-                  fontSize: "0.65rem",
-                  textDecoration: "none",
-                  transition: "border-color 0.3s, color 0.3s, background-color 0.3s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "var(--accent)";
-                  e.currentTarget.style.borderColor = "var(--accent)";
-                  e.currentTarget.style.color = "var(--void)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "var(--surface)";
-                  e.currentTarget.style.borderColor = "var(--border)";
-                  e.currentTarget.style.color = "var(--white)";
-                }}
-              >
-                View All →
-              </Link>
-            </MagneticElement>
-          </div>
-        )}
+              View All →
+            </Link>
+          </MagneticElement>
+        </div>
       </div>
     </section>
   );

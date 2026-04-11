@@ -279,9 +279,9 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
               position: "relative",
               display: "flex",
               justifyContent: "center",
+              alignItems: "center",
               width: "100%",
-              height: "auto",
-              maxHeight: "70vh"
+              height: "75vh", // Fixed height so the text below NEVER jumps
             }}>
               <AnimatePresence mode="wait">
                 {allImages[currentIndex]?.includes(".mp4") || allImages[currentIndex]?.includes(".webm") ? (
@@ -297,7 +297,7 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
                     transition={{ type: "spring", damping: 25, stiffness: 200 }}
                     style={{
                       maxWidth: "min(95vw, 1400px)",
-                      maxHeight: "70vh",
+                      maxHeight: "75vh",
                       objectFit: "contain",
                       borderRadius: "8px",
                       boxShadow: "0 40px 120px rgba(0,0,0,0.9)",
@@ -315,22 +315,31 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
                     className={loadedImages[currentIndex] ? "" : "flutter-shimmer"}
                     style={{
                       position: "relative",
-                      width: "100%",
                       maxWidth: "min(95vw, 1400px)",
-                      height: "70vh",
-                      display: "block",
+                      maxHeight: "75vh",
+                      minHeight: loadedImages[currentIndex] ? "auto" : "300px",
+                      minWidth: loadedImages[currentIndex] ? "auto" : "300px",
+                      display: "inline-flex",
                       borderRadius: "8px",
-                      boxShadow: "0 40px 120px rgba(0,0,0,0.9)",
-                      overflow: "hidden"
+                      boxShadow: loadedImages[currentIndex] ? "0 40px 120px rgba(0,0,0,0.9)" : "none",
+                      overflow: "hidden",
+                      backgroundColor: loadedImages[currentIndex] ? "transparent" : "var(--surface-2)",
                     }}
                   >
                     <Image
                       src={allImages[currentIndex]}
                       alt={title || "Portfolio Work"}
-                      fill
-                      sizes="(max-width: 1400px) 100vw, 1400px"
+                      width={1920}
+                      height={1080}
                       onLoad={() => setLoadedImages(prev => ({ ...prev, [currentIndex]: true }))}
-                      style={{ objectFit: "contain" }}
+                      style={{ 
+                         maxWidth: "100%", 
+                         maxHeight: "75vh",
+                         width: "auto", 
+                         height: "auto",
+                         objectFit: "contain",
+                         display: "block"
+                      }}
                     />
                   </motion.div>
                 )}

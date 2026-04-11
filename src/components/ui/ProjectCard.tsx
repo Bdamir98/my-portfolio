@@ -11,9 +11,10 @@ import { createClient } from "@/lib/supabase/client";
 
 interface Props {
   project: Project;
+  aspectRatioOverride?: number;
 }
 
-export default function ProjectCard({ project }: Props) {
+export default function ProjectCard({ project, aspectRatioOverride }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -32,7 +33,7 @@ export default function ProjectCard({ project }: Props) {
 
   // Extract metadata safely
   const meta = (project.metadata as any) || {};
-  let aspectRatio = Number(meta.aspect_ratio);
+  let aspectRatio = aspectRatioOverride || Number(meta.aspect_ratio);
 
   if (isNaN(aspectRatio) || !aspectRatio) {
     if (meta.width && meta.height) {

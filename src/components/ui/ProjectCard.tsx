@@ -20,6 +20,7 @@ export default function ProjectCard({ project }: Props) {
   const btnRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [categoryNames, setCategoryNames] = useState<Record<string, string>>({
     graphics: "Graphic Design",
     motion: "Motion Graphics",
@@ -105,7 +106,7 @@ export default function ProjectCard({ project }: Props) {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={handleClick}
-      className="flutter-shimmer"
+      className={isLoaded ? "" : "flutter-shimmer"}
       style={{
         position: "relative",
         width: "100%",
@@ -127,6 +128,7 @@ export default function ProjectCard({ project }: Props) {
           transform: isHovered ? "scale(1.05)" : "scale(1)",
           transition: "transform 0.8s var(--ease-expo-out)",
         }}
+        onLoad={() => setIsLoaded(true)}
         priority
       />
 

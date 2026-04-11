@@ -24,6 +24,7 @@ interface LightboxProps {
 export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title, description, initialIndex = 0 }: LightboxProps) {
   const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
 
   const allImages = useMemo(() => {
     if (images && images.length > 0) return images;
@@ -311,7 +312,7 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
                     animate={{ opacity: 1, scale: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.9, x: -20 }}
                     transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                    className="flutter-shimmer"
+                    className={loadedImages[currentIndex] ? "" : "flutter-shimmer"}
                     style={{
                       position: "relative",
                       width: "100%",
@@ -328,6 +329,7 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
                       alt={title || "Portfolio Work"}
                       fill
                       sizes="(max-width: 1400px) 100vw, 1400px"
+                      onLoad={() => setLoadedImages(prev => ({ ...prev, [currentIndex]: true }))}
                       style={{ objectFit: "contain" }}
                     />
                   </motion.div>

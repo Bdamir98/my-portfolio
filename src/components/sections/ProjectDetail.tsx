@@ -65,6 +65,9 @@ export default function ProjectDetail({ project, related }: Props) {
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [isCoverLoaded, setIsCoverLoaded] = useState(false);
+  const [loadedGalleryImages, setLoadedGalleryImages] = useState<Record<number, boolean>>({});
+  const [loadedRelated, setLoadedRelated] = useState<Record<string, boolean>>({});
 
   const mediaUrls = useMemo(() =>
     Array.isArray(project.media_urls) ? project.media_urls as string[] : [],
@@ -198,7 +201,7 @@ export default function ProjectDetail({ project, related }: Props) {
             <span style={{ fontSize: "1rem" }}>←</span> Back to Work
           </Link>
         </div>
-        <div className="flutter-shimmer" style={{
+        <div className={isCoverLoaded ? "" : "flutter-shimmer"} style={{
           position: "relative",
           width: "100%",
           height: "55vh",
@@ -215,6 +218,7 @@ export default function ProjectDetail({ project, related }: Props) {
                 muted
                 loop
                 playsInline
+                onLoadedData={() => setIsCoverLoaded(true)}
                 style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scale(1.1)" }}
               />
             ) : (
@@ -223,6 +227,7 @@ export default function ProjectDetail({ project, related }: Props) {
                 alt={project.title}
                 fill
                 priority
+                onLoad={() => setIsCoverLoaded(true)}
                 style={{ objectFit: "cover", objectPosition: "center", transform: "scale(1.1)" }} // scale for parallax buffer
                 sizes="(max-width: 1400px) 100vw, 1400px"
               />
@@ -523,7 +528,7 @@ export default function ProjectDetail({ project, related }: Props) {
                   setLightboxIndex(i);
                   setLightboxOpen(true);
                 }}
-                className="flutter-shimmer"
+                className={loadedGalleryImages[i] ? "" : "flutter-shimmer"}
                 style={{
                   position: "relative",
                   width: "45vw",
@@ -543,6 +548,7 @@ export default function ProjectDetail({ project, related }: Props) {
                     muted
                     loop
                     playsInline
+                    onLoadedData={() => setLoadedGalleryImages(prev => ({ ...prev, [i]: true }))}
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 ) : (
@@ -551,6 +557,7 @@ export default function ProjectDetail({ project, related }: Props) {
                     alt={`${project.title} ${i + 1}`}
                     fill
                     sizes="70vw"
+                    onLoad={() => setLoadedGalleryImages(prev => ({ ...prev, [i]: true }))}
                     style={{ objectFit: "contain" }}
                   />
                 )}
@@ -601,9 +608,9 @@ export default function ProjectDetail({ project, related }: Props) {
                     (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
                   }}
                 >
-                  <div className="flutter-shimmer" style={{ aspectRatio: "4/3", position: "relative", backgroundColor: "var(--surface-2)" }}>
+                  <div className={loadedRelated[p.id] ? "" : "flutter-shimmer"} style={{ aspectRatio: "4/3", position: "relative", backgroundColor: "var(--surface-2)" }}>
                     {p.cover_url && (
-                      <Image src={p.cover_url} alt={p.title} fill style={{ objectFit: "cover" }} sizes="33vw" />
+                      <Image src={p.cover_url} alt={p.title} fill style={{ objectFit: "cover" }} sizes="33vw" onLoad={() => setLoadedRelated(prev => ({ ...prev, [p.id]: true }))} />
                     )}
                   </div>
                   <div style={{ padding: "1rem 1.25rem" }}>

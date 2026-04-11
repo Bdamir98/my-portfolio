@@ -45,6 +45,7 @@ export default function Hero({ settings }: HeroProps) {
   const [currentWord, setCurrentWord] = useState(0);
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 }); // Out of sight initially
   const [isHoveringWord, setIsHoveringWord] = useState(false);
+  const [isRevealLoaded, setIsRevealLoaded] = useState(false);
 
   // WebGL-like noise canvas
   useEffect(() => {
@@ -279,7 +280,7 @@ export default function Hero({ settings }: HeroProps) {
       {/* Floating Image Reveal (hooked to JS QuickTo) */}
       <div
         ref={hoverImageRef}
-        className="flutter-shimmer"
+        className={isRevealLoaded ? "" : "flutter-shimmer"}
         style={{
           position: "fixed",
           top: 0, left: 0,
@@ -295,6 +296,7 @@ export default function Hero({ settings }: HeroProps) {
           alt="Creative Reveal"
           fill
           style={{ objectFit: "cover" }}
+          onLoad={() => setIsRevealLoaded(true)}
           priority
         />
       </div>

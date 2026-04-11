@@ -84,8 +84,8 @@ export default function About({ settings }: AboutProps) {
         once: true,
         onEnter: () => {
           gsap.fromTo(
-            metrics, 
-            { y: 40, opacity: 0 }, 
+            metrics,
+            { y: 40, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "expo.out" }
           );
         },
@@ -108,7 +108,7 @@ export default function About({ settings }: AboutProps) {
         {storyTagline}
       </p>
       <h1 style={{ fontFamily: "var(--font-clash)", fontSize: "clamp(2.5rem, 7vw, 6rem)", fontWeight: 700, color: "var(--white)", lineHeight: 0.95, letterSpacing: "-0.03em", marginBottom: "4rem" }}>
-        {title.includes(" ") ? <>{title.split(" ")[0]}<br/><span style={{ color: "var(--accent)" }}>{title.split(" ").slice(1).join(" ")}</span></> : title}
+        {title.includes(" ") ? <>{title.split(" ")[0]}<br /><span style={{ color: "var(--accent)" }}>{title.split(" ").slice(1).join(" ")}</span></> : title}
       </h1>
 
       {/* Split layout */}
@@ -152,9 +152,9 @@ export default function About({ settings }: AboutProps) {
         {/* Philosophy */}
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%" }}>
           {philosophy.map((para, i) => (
-             <p key={i} style={{ fontFamily: "var(--font-inter)", fontSize: i === 0 ? "1.125rem" : "1rem", color: "var(--muted)", lineHeight: 1.85, marginBottom: i === philosophy.length - 1 ? "3rem" : "2rem" }}>
-                {para}
-             </p>
+            <p key={i} style={{ fontFamily: "var(--font-inter)", fontSize: i === 0 ? "1.125rem" : "1rem", color: "var(--muted)", lineHeight: 1.85, marginBottom: i === philosophy.length - 1 ? "3rem" : "2rem" }}>
+              {para}
+            </p>
           ))}
 
           {/* Download CV */}
@@ -185,7 +185,7 @@ export default function About({ settings }: AboutProps) {
                 (e.currentTarget as HTMLElement).style.color = "var(--white)";
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3 7l4 4 4-4M2 12h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3 7l4 4 4-4M2 12h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               Download CV
             </a>
           </div>
@@ -193,12 +193,12 @@ export default function About({ settings }: AboutProps) {
       </div>
 
       {/* Metrics Section */}
-      <div 
+      <div
         ref={metricsRef}
-        style={{ 
-          display: "grid", 
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", 
-          gap: "2rem", 
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "2rem",
           marginBottom: "8rem",
           padding: "3rem",
           backgroundColor: "var(--surface)",

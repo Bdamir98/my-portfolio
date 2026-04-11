@@ -110,7 +110,7 @@ export default function Hero({ settings }: HeroProps) {
       setMousePos({ x: e.clientX, y: e.clientY });
       if (xTo && yTo) {
         xTo(e.clientX + 20); // Smooth floating offset from cursor
-        yTo(e.clientY + 20); 
+        yTo(e.clientY + 20);
       }
     };
     window.addEventListener("mousemove", onMouseMove);
@@ -153,7 +153,7 @@ export default function Hero({ settings }: HeroProps) {
       if (!el) return;
       const target = stats[i].value;
       const obj = { val: 0 };
-      
+
       gsap.to(obj, {
         val: target,
         duration: 1.8,
@@ -179,7 +179,7 @@ export default function Hero({ settings }: HeroProps) {
     // Cinematic Entrance animation
     const hero = heroRef.current;
     if (!hero) return;
-    
+
     const tl = gsap.timeline({ delay: 0.2 });
 
     // Text scramble character appearance for main headlines
@@ -259,7 +259,7 @@ export default function Hero({ settings }: HeroProps) {
           pointerEvents: "none",
         }}
       />
-      
+
       {/* Interactive Ambient Mouse Glow */}
       <div
         style={{
@@ -277,24 +277,25 @@ export default function Hero({ settings }: HeroProps) {
       />
 
       {/* Floating Image Reveal (hooked to JS QuickTo) */}
-      <div 
-        ref={hoverImageRef} 
-        style={{ 
-          position: "fixed", 
-          top: 0, left: 0, 
-          width: 320, height: 200, 
+      <div
+        ref={hoverImageRef}
+        className="flutter-shimmer"
+        style={{
+          position: "fixed",
+          top: 0, left: 0,
+          width: 320, height: 200,
           pointerEvents: "none", zIndex: 50,
           opacity: 0, transform: "scale(0.4)",
           borderRadius: "16px", overflow: "hidden",
           boxShadow: "0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)"
         }}
       >
-        <Image 
-          src={revealImage} 
-          alt="Creative Reveal" 
-          fill 
-          style={{ objectFit: "cover" }} 
-          priority 
+        <Image
+          src={revealImage}
+          alt="Creative Reveal"
+          fill
+          style={{ objectFit: "cover" }}
+          priority
         />
       </div>
 
@@ -350,7 +351,7 @@ export default function Hero({ settings }: HeroProps) {
           }}
         >
           {title.split(" ").map((word, i) => (
-             <div key={i} style={{ overflow: "hidden" }}>{splitText(word)}</div>
+            <div key={i} style={{ overflow: "hidden" }}>{splitText(word)}</div>
           ))}
         </h1>
 
@@ -426,7 +427,7 @@ export default function Hero({ settings }: HeroProps) {
               >
                 View Work
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
             </MagneticElement>
@@ -573,7 +574,7 @@ export default function Hero({ settings }: HeroProps) {
           Scroll
         </span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M10 3v14M5 13l5 5 5-5" stroke="var(--muted)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M10 3v14M5 13l5 5 5-5" stroke="var(--muted)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
     </section>

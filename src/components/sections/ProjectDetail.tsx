@@ -62,11 +62,11 @@ export default function ProjectDetail({ project, related }: Props) {
   const metaRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  
+
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const mediaUrls = useMemo(() => 
+  const mediaUrls = useMemo(() =>
     Array.isArray(project.media_urls) ? project.media_urls as string[] : [],
     [project.media_urls]
   );
@@ -129,7 +129,7 @@ export default function ProjectDetail({ project, related }: Props) {
     // Reveal stagger for specs
     const specItems = metaRef.current?.querySelectorAll(".spec-item");
     if (specItems) {
-      gsap.fromTo(specItems, 
+      gsap.fromTo(specItems,
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 1, ease: "expo.out", stagger: 0.1, scrollTrigger: { trigger: metaRef.current, start: "top 90%" } }
       );
@@ -142,7 +142,7 @@ export default function ProjectDetail({ project, related }: Props) {
     const rect = btn.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
-    
+
     gsap.to(btn, {
       x: x * 0.4,
       y: y * 0.4,
@@ -172,7 +172,7 @@ export default function ProjectDetail({ project, related }: Props) {
         }}
       >
         <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: "2rem" }}>
-          <Link 
+          <Link
             href="/work"
             onMouseMove={handleMagnetic}
             onMouseLeave={resetMagnetic}
@@ -198,7 +198,7 @@ export default function ProjectDetail({ project, related }: Props) {
             <span style={{ fontSize: "1rem" }}>←</span> Back to Work
           </Link>
         </div>
-        <div style={{
+        <div className="flutter-shimmer" style={{
           position: "relative",
           width: "100%",
           height: "55vh",
@@ -288,9 +288,9 @@ export default function ProjectDetail({ project, related }: Props) {
         }}
       >
         {/* Project Header & Metadata (Specs) */}
-        <div style={{ 
-          display: "flex", 
-          flexDirection: "column", 
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
           gap: "4rem",
           marginBottom: "6rem"
         }}>
@@ -325,21 +325,21 @@ export default function ProjectDetail({ project, related }: Props) {
               { label: "Role", value: formatCategory(project.category) },
             ].filter(s => s.value).map((spec, i) => (
               <div key={i} className="spec-item" style={{ minWidth: "140px" }}>
-                <p style={{ 
-                  fontFamily: "var(--font-jetbrains)", 
-                  fontSize: "0.5625rem", 
-                  color: "var(--muted)", 
-                  letterSpacing: "0.25em", 
-                  textTransform: "uppercase", 
+                <p style={{
+                  fontFamily: "var(--font-jetbrains)",
+                  fontSize: "0.5625rem",
+                  color: "var(--muted)",
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
                   marginBottom: "0.75rem",
                   fontWeight: 600
                 }}>
                   {spec.label}
                 </p>
-                <p style={{ 
-                  fontFamily: "var(--font-inter)", 
-                  fontSize: "1.125rem", 
-                  color: "var(--white)", 
+                <p style={{
+                  fontFamily: "var(--font-inter)",
+                  fontSize: "1.125rem",
+                  color: "var(--white)",
                   margin: 0,
                   fontWeight: 500
                 }}>
@@ -351,17 +351,17 @@ export default function ProjectDetail({ project, related }: Props) {
         </div>
 
         {/* Narrative / Description */}
-        <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", 
-            gap: "4rem", 
-            marginBottom: "8rem" 
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: "4rem",
+          marginBottom: "8rem"
         }}>
           <div>
-            <p style={{ 
-              fontFamily: "var(--font-inter)", 
-              fontSize: "1.5rem", 
-              color: "var(--white)", 
+            <p style={{
+              fontFamily: "var(--font-inter)",
+              fontSize: "1.5rem",
+              color: "var(--white)",
               lineHeight: 1.4,
               fontWeight: 400,
               margin: 0,
@@ -469,7 +469,7 @@ export default function ProjectDetail({ project, related }: Props) {
                 onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               >
                 Live Demo
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 14l10-10m0 0H6m8 0v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 14l10-10m0 0H6m8 0v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>
             )}
             {project.github_url && (
@@ -523,6 +523,7 @@ export default function ProjectDetail({ project, related }: Props) {
                   setLightboxIndex(i);
                   setLightboxOpen(true);
                 }}
+                className="flutter-shimmer"
                 style={{
                   position: "relative",
                   width: "45vw",
@@ -600,7 +601,7 @@ export default function ProjectDetail({ project, related }: Props) {
                     (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
                   }}
                 >
-                  <div style={{ aspectRatio: "4/3", position: "relative", backgroundColor: "var(--surface-2)" }}>
+                  <div className="flutter-shimmer" style={{ aspectRatio: "4/3", position: "relative", backgroundColor: "var(--surface-2)" }}>
                     {p.cover_url && (
                       <Image src={p.cover_url} alt={p.title} fill style={{ objectFit: "cover" }} sizes="33vw" />
                     )}

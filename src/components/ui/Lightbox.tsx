@@ -116,14 +116,14 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
           }}
         >
           {/* Background Overlay (Click to close) */}
-          <div 
-            style={{ 
-              position: "fixed", 
-              inset: 0, 
-              zIndex: -1, 
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: -1,
               cursor: "zoom-out" // Only background has zoom-out cursor
-            }} 
-            onClick={onClose} 
+            }}
+            onClick={onClose}
           />
 
           {/* Subtle Glow Background */}
@@ -274,9 +274,9 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ 
-              position: "relative", 
-              display: "flex", 
+            <div style={{
+              position: "relative",
+              display: "flex",
               justifyContent: "center",
               width: "100%",
               height: "auto",
@@ -311,6 +311,7 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
                     animate={{ opacity: 1, scale: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.9, x: -20 }}
                     transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                    className="flutter-shimmer"
                     style={{
                       position: "relative",
                       width: "100%",
@@ -360,7 +361,7 @@ export default function Lightbox({ isOpen, onClose, images = [], imageUrl, title
                   </h4>
                 )}
                 {description && (
-                  <div style={{ 
+                  <div style={{
                     width: "100%",
                     maxWidth: "800px",
                     margin: "0 auto 3rem",

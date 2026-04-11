@@ -217,3 +217,40 @@ body {
   100% { background-position: 200% 0; }
 }
 
+/* ─────────────────────────────────────────
+   Flutter Style Skeleton Loader
+───────────────────────────────────────── */
+.flutter-shimmer {
+  background-color: var(--surface-2) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.flutter-shimmer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+  animation: flutterShimmerSweep 1.8s infinite linear;
+  z-index: 0; /* sits behind the foreground items */
+  pointer-events: none;
+}
+
+@keyframes flutterShimmerSweep {
+  0% {
+    background-position: 250% 0;
+  }
+  100% {
+    background-position: -250% 0;
+  }
+}
+
+

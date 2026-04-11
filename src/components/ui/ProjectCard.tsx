@@ -25,14 +25,14 @@ export default function ProjectCard({ project }: Props) {
     motion: "Motion Graphics",
     web: "Web Dev"
   });
-  
+
   const { setMode } = useCursorStore();
   const supabase = createClient();
 
   // Extract metadata safely
   const meta = (project.metadata as any) || {};
   let aspectRatio = Number(meta.aspect_ratio);
-  
+
   if (isNaN(aspectRatio) || !aspectRatio) {
     if (meta.width && meta.height) {
       aspectRatio = Number(meta.width) / Number(meta.height);
@@ -73,7 +73,7 @@ export default function ProjectCard({ project }: Props) {
     gsap.to(cardRef.current, { scale: 1.02, duration: 0.4, ease: "expo.out" });
     gsap.to(overlayRef.current, { opacity: 1, duration: 0.35 });
     gsap.to(btnRef.current, { y: 0, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
-    
+
     if (!isGalleryItem) {
       gsap.to(contentRef.current, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out" });
     }
@@ -85,7 +85,7 @@ export default function ProjectCard({ project }: Props) {
     gsap.to(cardRef.current, { scale: 1, duration: 0.4, ease: "expo.out" });
     gsap.to(overlayRef.current, { opacity: 0, duration: 0.3 });
     gsap.to(btnRef.current, { y: 20, opacity: 0, duration: 0.3 });
-    
+
     if (!isGalleryItem) {
       gsap.to(contentRef.current, { y: 20, opacity: 0, duration: 0.3 });
     }
@@ -105,6 +105,7 @@ export default function ProjectCard({ project }: Props) {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={handleClick}
+      className="flutter-shimmer"
       style={{
         position: "relative",
         width: "100%",
@@ -228,12 +229,12 @@ export default function ProjectCard({ project }: Props) {
           {content}
         </div>
       )}
-      
-      <Lightbox 
-        isOpen={isLightboxOpen} 
-        onClose={() => setIsLightboxOpen(false)} 
+
+      <Lightbox
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
         images={Array.isArray(project.media_urls) ? (project.media_urls as string[]) : []}
-        imageUrl={project.cover_url || ""} 
+        imageUrl={project.cover_url || ""}
         title={project.title}
         description={project.description}
       />
